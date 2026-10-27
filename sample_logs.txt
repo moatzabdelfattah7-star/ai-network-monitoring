@@ -1,0 +1,5 @@
+2026-10-24 10:01:12 [core-sw1] INTERFACE Gi0/1 changed state to down
+2026-10-24 10:01:14 [core-sw1] OSPF-5-ADJCHG Neighbor 10.0.0.2 Full -> Down (Interface down)
+2026-10-24 10:01:20 [edge-rtr2] BGP-3-NOTIFICATION sent to neighbor 172.16.0.1 hold time expired
+2026-10-24 10:02:03 [fw1] High CPU utilization 96% for 5 minutes
+2026-10-24 10:02:30 [core-sw1] Packet loss 38% on VLAN 20

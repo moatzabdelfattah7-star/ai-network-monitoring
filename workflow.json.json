@@ -1,0 +1,300 @@
+{
+  "name": "My workflow",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -288,
+        -32
+      ],
+      "id": "06d93836-4d9b-40a9-b760-f536759a97dc",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9ea366a0-d45d-48f1-8d98-f06c54fc45f2",
+              "name": "device",
+              "value": "Router-01",
+              "type": "string"
+            },
+            {
+              "id": "ae7931ac-0fd2-4136-8a60-cae571f759e9",
+              "name": "ip",
+              "value": "192.168.1.1",
+              "type": "string"
+            },
+            {
+              "id": "91982962-ff92-4213-866c-58040a7c4cf6",
+              "name": "status",
+              "value": "DOWN",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {
+          "dotNotation": false
+        }
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.5,
+      "position": [
+        544,
+        -32
+      ],
+      "id": "45e485fb-1ea3-4f68-b407-795a65d9a51e",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "db50acdf-0131-4d4e-9bff-c60a2f85d7ba",
+              "leftValue": "={{$json.status}}",
+              "rightValue": "DOWN",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            },
+            {
+              "id": "269e04c1-641f-4a99-8b91-252f2438fc89",
+              "leftValue": "",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": false
+        }
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        272,
+        -32
+      ],
+      "id": "b31b11b0-bb60-4d11-b108-df37cc44050e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "language": "pythonNative",
+        "pythonCode": "devices = [\n    {\n        \"device\": \"Router-01\",\n        \"ip\": \"192.168.1.1\",\n        \"status\": \"DOWN\"\n    },\n    {\n        \"device\": \"Server-01\",\n        \"ip\": \"192.168.1.10\",\n        \"status\": \"UP\"\n    },\n    {\n        \"device\": \"Switch-01\",\n        \"ip\": \"192.168.1.2\",\n        \"status\": \"DOWN\"\n    }\n]\n\nreturn [{\"json\": device} for device in devices]"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        -32
+      ],
+      "id": "653fbc76-f025-4c59-9661-fa01134c9d44",
+      "name": "Code in Python"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=   You are a senior network engineer. Analyze this device alert.\n   Device: {{ $json.device }}\n   IP: {{ $json.ip }}\n   Status: {{ $json.status }}\n\n   Reply in plain text, max 5 lines: severity, likely cause, and 2 fix steps. No email greeting or signature."
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        -544,
+        464
+      ],
+      "id": "56460339-8782-4fcd-abb0-ac56d9cdd5aa",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": null,
+          "name": "",
+          "__aiGatewayManaged": true
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "19ZWT4HhQQOVAsxToR4dxf_tImYGHY8dxcTl-XZm0ryU",
+          "mode": "list",
+          "cachedResultName": "Network_Logs",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19ZWT4HhQQOVAsxToR4dxf_tImYGHY8dxcTl-XZm0ryU/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "الورقة1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19ZWT4HhQQOVAsxToR4dxf_tImYGHY8dxcTl-XZm0ryU/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1024,
+        64
+      ],
+      "id": "b90f6998-0b77-418d-aa49-013e43393428",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "x2JAQslKCkbsNG8R",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "1959737198",
+        "text": "=\nNetwork Alert {{ $json.content.parts[0].text }}",
+        "replyMarkup": "=none",
+        "forceReply": {},
+        "replyKeyboardOptions": {},
+        "replyKeyboardRemove": {},
+        "additionalFields": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        -176,
+        464
+      ],
+      "id": "48d6c073-cac7-4d96-a412-70e445bf5a1a",
+      "name": "Send a text message",
+      "webhookId": "5b42ec7f-18e5-4cee-ac47-f77a10b578cd",
+      "credentials": {
+        "telegramApi": {
+          "id": "YGYYJWuBvrW5l1g4",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When clicking ‘Execute workflow’": [
+      {
+        "json": {},
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Code in Python",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in Python": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a text message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": true
+  },
+  "versionId": "d4bdf592-2409-4abe-9b0c-240c75d64010",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "327d7ae11fd7967ce7c32bb74e507b188b04438efad8829394c0a39f4ade76f1"
+  },
+  "nodeGroups": [],
+  "id": "LYOSRigcwoU6wtAm",
+  "tags": []
+}
